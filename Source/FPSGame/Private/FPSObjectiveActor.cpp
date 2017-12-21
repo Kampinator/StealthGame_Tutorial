@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "FPSCharacter.h"
 
 
 
@@ -20,15 +21,13 @@ AFPSObjectiveActor::AFPSObjectiveActor()
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore); // All channels ignore collision
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap); // Set collision to Channel and then response
 	SphereComp->SetupAttachment(MeshComp);
-
-	
 }
 
 // Called when the game starts or when spawned
 void AFPSObjectiveActor::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayEffects();
+	
 	
 }
 
@@ -38,15 +37,17 @@ void AFPSObjectiveActor::PlayEffects()
 }
 
 // Called every frame
-void AFPSObjectiveActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
+
 
 void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor); // Always remember to call Super!
 	PlayEffects();
-
+	AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
+	if (MyCharacter)
+	{
+		MyCharacter->bIsCarryingObjective = true;
+		Destroy();
+	}
 }
 

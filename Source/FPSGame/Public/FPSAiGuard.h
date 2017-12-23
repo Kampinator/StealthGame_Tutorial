@@ -8,6 +8,14 @@
 
 class UPawnSensingComponent;
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	idle,
+	Suspicious,
+	Alert
+};
+
 UCLASS()
 class FPSGAME_API AFPSAiGuard : public ACharacter
 {
@@ -35,6 +43,11 @@ protected:
 	void ResetOrientation();
 
 	FTimerHandle TimerHandle_ResetOrientation;
+
+	EAIState GuardState;
+	void SetGuardState(EAIState Newstate);
+	UFUNCTION(BlueprintImplementableEvent, Category = "AI")
+	void OnStateChanged(EAIState NewState);
 
 public:	
 	// Called every frame

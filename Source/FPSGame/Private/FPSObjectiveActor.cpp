@@ -49,5 +49,9 @@ void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 		MyCharacter->bIsCarryingObjective = true;
 		Destroy();
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("fsfs"));
+	}
 }
 

@@ -26,7 +26,15 @@ protected:
 
 	UFUNCTION() // Remember UFUNCTION ON DELEGATES!!
 	void OnPawnSeen(APawn* SeenPawn);
+	UFUNCTION() // Remember UFUNCTION ON DELEGATES!!
+	void OnNoiseHeard(APawn* PawnInstigator, const FVector& Location, float Volume);
 
+	FRotator OriginalRotation;
+
+	UFUNCTION() // Remember UFUNCTION ON DELEGATES!!
+	void ResetOrientation();
+
+	FTimerHandle TimerHandle_ResetOrientation;
 
 public:	
 	// Called every frame

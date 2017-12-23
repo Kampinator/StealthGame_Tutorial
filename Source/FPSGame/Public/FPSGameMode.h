@@ -20,10 +20,6 @@ public:
 	void CompleteMission(APawn* InstigatorPawn);
 	UFUNCTION(BlueprintImplementableEvent, Category = "GameMode")
 	void OnMissionCompleted(APawn* InstigatorPawn);
-<<<<<<< HEAD
-	//
-=======
->>>>>>> 10e6eb3000b9af3836b9cf22644719fa221325e6
 };
 
 

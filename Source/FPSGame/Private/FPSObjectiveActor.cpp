@@ -43,15 +43,20 @@ void AFPSObjectiveActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor); // Always remember to call Super!
 	PlayEffects();
-	AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
-	if (MyCharacter)
+
+	if (Role == ROLE_Authority)
 	{
-		MyCharacter->bIsCarryingObjective = true;
-		Destroy();
+		AFPSCharacter* MyCharacter = Cast<AFPSCharacter>(OtherActor);
+		if (MyCharacter)
+		{
+			MyCharacter->bIsCarryingObjective = true;
+			Destroy();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("fsfs"));
+		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("fsfs"));
-	}
+
 }
 

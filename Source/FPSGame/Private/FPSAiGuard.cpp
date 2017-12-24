@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "TimerManager.h"
 #include "FPSGameMode.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AFPSAiGuard::AFPSAiGuard()
@@ -14,6 +15,13 @@ AFPSAiGuard::AFPSAiGuard()
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	GuardState = EAIState::idle;
 
+}
+
+void AFPSAiGuard::GetLifetimeReplicatedProps(TArray < FLifetimeProperty > & OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AFPSAiGuard, GuardState);
+	
 }
 
 // Called when the game starts or when spawned
@@ -74,13 +82,21 @@ void AFPSAiGuard::SetGuardState(EAIState Newstate)
 	if (GuardState == Newstate)
 		return;
 	GuardState = Newstate;
-	OnStateChanged(GuardState);
+	if(Role==ROLE_Authority)
+		OnRep_GuardState(); // In case we are server. 
+	
 }
 
 // Called every frame
 void AFPSAiGuard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AFPSAiGuard::OnRep_GuardState()
+{
+	// This will only be called on client.
+	OnStateChanged(GuardState);
 }
 
 

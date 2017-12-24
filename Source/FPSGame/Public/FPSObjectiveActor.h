@@ -33,7 +33,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	void PlayEffects();
-
 	UPROPERTY(EditDefaultsOnly, Category = "Effects")
 	UParticleSystem* PickupFX;
 

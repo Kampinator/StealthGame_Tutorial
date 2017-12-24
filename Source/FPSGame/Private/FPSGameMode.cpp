@@ -5,6 +5,7 @@
 #include "FPSCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
+#include "FPSGmeState.h"
 
 AFPSGameMode::AFPSGameMode()
 {
@@ -19,10 +20,7 @@ AFPSGameMode::AFPSGameMode()
 void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bMissionSuccess)
 {
 	if (InstigatorPawn)
-	{
-		InstigatorPawn->DisableInput(nullptr);
-		OnMissionCompleted(InstigatorPawn, bMissionSuccess);
-		
+	{	
 		TArray<AActor*> OutActors;
 		if (SpectatingViewPointClass)
 		{
@@ -31,11 +29,14 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bMissionSuccess)
 			if (OutActors.Num() > 0)
 			{
 				AActor* NewViewTarget = OutActors[0];
-				APlayerController* PCC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-				if (PCC)
+
+				for (FConstPlayerControllerIterator it = GetWorld()->GetPlayerControllerIterator(); it; it++)
 				{
-					PCC->SetViewTargetWithBlend(NewViewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Linear);
+					APlayerController* PC = it->Get();
+					if (PC)
+						PC->SetViewTargetWithBlend(NewViewTarget, 0.5f, EViewTargetBlendFunction::VTBlend_Linear);
 				}
+
 			}
 		}
 		else
@@ -43,4 +44,11 @@ void AFPSGameMode::CompleteMission(APawn* InstigatorPawn, bool bMissionSuccess)
 			UE_LOG(LogTemp, Warning, TEXT("LogTemp, Warning, SpectatingViewpointClass is nullptr"));
 		}
 	}
+
+	AFPSGmeState* GS = GetGameState<AFPSGmeState>();
+	if (GS)
+	{
+		GS->MulticastOnMissionComplete(InstigatorPawn, bMissionSuccess);
+	}
+	OnMissionCompleted(InstigatorPawn, bMissionSuccess);
 }
